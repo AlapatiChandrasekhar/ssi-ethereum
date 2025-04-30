@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Identity Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .result {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tabcontent {
+            display: none;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Decentralized Identity Management</h1>
+    
+    <div id="connectSection" class="section">
+        <h2>Connect to Ethereum</h2>
+        <button id="connectButton">Connect Wallet</button>
+        <div id="accountInfo" class="result"></div>
+    </div>
+
+    <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'IdentityTab')">Identity</button>
+        <button class="tablinks" onclick="openTab(event, 'ClientTab')">Client</button>
+        <button class="tablinks" onclick="openTab(event, 'AuthTab')">Auth</button>
+    </div>
+
+    <div id="IdentityTab" class="tabcontent show">
+        <div class="section">
+            <h3>User Registration</h3>
+            <input type="text" id="userName" placeholder="Name">
+            <input type="text" id="userDob" placeholder="Date of Birth">
+            <input type="text" id="userIdHash" placeholder="ID Hash">
+            <input type="text" id="userPassword" placeholder="Password">
+            <button id="registerUser">Register User</button>
+            <div id="userRegistrationResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>User Profile</h3>
+            <button id="getUserProfile">Get My Profile</button>
+            <div id="userProfileResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Update User</h3>
+            <input type="text" id="updateIdHash" placeholder="New ID Hash">
+            <input type="text" id="updatePassword" placeholder="New Password">
+            <button id="updateUser">Update User</button>
+            <div id="updateUserResult" class="result"></div>
+        </div>
+    </div>
+
+    <div id="ClientTab" class="tabcontent">
+        <div class="section">
+            <h3>Register Client</h3>
+            <input type="text" id="clientName" placeholder="Client Name">
+            <button id="registerClient">Register Client</button>
+            <div id="clientRegistrationResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Add Client App</h3>
+            <input type="text" id="projectName" placeholder="Project Name">
+            <input type="text" id="clientId" placeholder="Client ID">
+            <input type="text" id="clientSecret" placeholder="Client Secret">
+            <button id="addClientApp">Add Client App</button>
+            <div id="clientAppResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Client Profile</h3>
+            <button id="getClientProfile">Get My Client Profile</button>
+            <div id="clientProfileResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Access Token</h3>
+            <input type="text" id="clientIdForToken" placeholder="Client ID">
+            <input type="text" id="accessToken" placeholder="Access Token">
+            <input type="text" id="scope" placeholder="Scope">
+            <button id="addToken">Add Token</button>
+            <button id="fetchToken">Fetch Token</button>
+            <div id="tokenResult" class="result"></div>
+        </div>
+    </div>
+
+    <div id="AuthTab" class="tabcontent">
+        <div class="section">
+            <h3>Auth Contract</h3>
+            <input type="text" id="authContractAddress" placeholder="Auth Contract Address">
+            <button id="initAuth">Initialize Auth</button>
+            <div id="authInitResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Register Client (Auth)</h3>
+            <input type="text" id="authClientName" placeholder="Client Name">
+            <button id="authRegisterClient">Register Client</button>
+            <div id="authClientRegistrationResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Add Client App (Auth)</h3>
+            <input type="text" id="authProjectName" placeholder="Project Name">
+            <input type="text" id="authClientId" placeholder="Client ID">
+            <input type="text" id="authClientSecret" placeholder="Client Secret">
+            <button id="authAddClientApp">Add Client App</button>
+            <div id="authClientAppResult" class="result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Client Profile (Auth)</h3>
+            <button id="authGetClientProfile">Get My Client Profile</button>
+            <div id="authClientProfileResult" class="result"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
